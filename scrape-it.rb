@@ -54,11 +54,13 @@ class Scraper < Thor
         `say "#{away_name} has #{away_score} points"`
         winning_name = home_score > away_score ? home_name : away_name
 
-        if home_score >= WINNING_SCORE || away_score >= WINNING_SCORE
+        game_over = doc.css("#match_report > div:nth-child(2) > p:nth-child(2)").text.downcase.include?("final")
+
+        if game_over || home_score >= WINNING_SCORE || away_score >= WINNING_SCORE
           `say "#{winning_name} just won!"`
           `afplay ./sfx-victory1.mp3`
           game_over = true
-        else
+        elsif home_score > 0 || away_score > 0
           `say "#{winning_name}" is winning`
         end
       end
