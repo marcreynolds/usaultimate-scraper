@@ -2,7 +2,7 @@ require "httparty"
 require "nokogiri"
 require "thor"
 
-    WINNING_SCORE = 15
+WINNING_SCORE = 15
 
 class Scraper < Thor
   desc "match", "scrape a match report"
