@@ -11,6 +11,7 @@ GEM
     multi_xml (0.6.0)
     nokogiri (1.10.10)
       mini_portile2 (~> 2.4.0)
+    thor (1.2.1)
 
 PLATFORMS
   ruby
@@ -18,6 +19,7 @@ PLATFORMS
 DEPENDENCIES
   httparty
   nokogiri
+  thor
 
 BUNDLED WITH
    2.1.4
