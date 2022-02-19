@@ -66,12 +66,7 @@ class Scraper < Thor
       end
 
       sleep 5
-  end
-
-  desc "stuff", "this is the grab bag"
-  def stuff
     end
-
   end
 end
 
