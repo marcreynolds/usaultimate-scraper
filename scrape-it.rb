@@ -42,7 +42,7 @@ class Scraper < Thor
           `say "#{home_name} just scored #{home_score_diff}"`
         elsif away_score_diff > 0 && !away_score.nil?
           `say "#{away_name} just scored #{away_score_diff}"`
-        elsif !(away_score.nil? || home_scope.nil?)
+        elsif !(away_score.nil? || home_score.nil?)
           `say "It's all tied up!"`
         end
 
@@ -60,8 +60,10 @@ class Scraper < Thor
           `say "#{winning_name} just won!"`
           `afplay ./sfx-victory1.mp3`
           game_over = true
+        elsif home_score == away_score
+          `say "it's all tied up!"`
         elsif home_score > 0 || away_score > 0
-          `say "#{winning_name}" is winning`
+          `say "#{winning_name} is winning"`
         end
       end
 
