@@ -8,6 +8,7 @@ class Scraper < Thor
   desc "match", "scrape a match report"
   option :url, type: :string
   option :match_id, type: :string
+  option :voice, type: :string, default: "alex"
   def match
     url = if options[:url].nil?
             "https:\/\/play.usaultimate.org\/teams\/events\/match_report\/?EventGameId=#{options[:match_id]}"
@@ -15,6 +16,7 @@ class Scraper < Thor
             options[:url]
           end
     uri = URI.parse(url)
+    voice = options[:voice]
 
     home_score = nil
     home_name = nil
@@ -39,31 +41,31 @@ class Scraper < Thor
         away_score_diff = new_away_score - away_score.to_i
 
         if home_score_diff > 0 && !home_score.nil?
-          `say "#{home_name} just scored #{home_score_diff}"`
+          `say "#{home_name} just scored #{home_score_diff}" -v #{voice}`
         elsif away_score_diff > 0 && !away_score.nil?
-          `say "#{away_name} just scored #{away_score_diff}"`
+          `say "#{away_name} just scored #{away_score_diff}" -v #{voice}`
         elsif !(away_score.nil? || home_score.nil?)
-          `say "It's all tied up!"`
+          `say "It's all tied up!" -v #{voice}`
         end
 
         home_score = new_home_score
         away_score = new_away_score
 
         puts "#{home_name}: #{home_score}\n#{away_name}: #{away_score}"
-        `say "#{home_name} has #{home_score} points"`
-        `say "#{away_name} has #{away_score} points"`
+        `say "#{home_name} has #{home_score} points" -v #{voice}`
+        `say "#{away_name} has #{away_score} points" -v #{voice}`
         winning_name = home_score > away_score ? home_name : away_name
 
         game_over = doc.css("#match_report > div:nth-child(2) > p:nth-child(2)").text.downcase.include?("final")
 
         if game_over || home_score >= WINNING_SCORE || away_score >= WINNING_SCORE
-          `say "#{winning_name} just won!"`
+          `say "#{winning_name} just won!" -v #{voice}`
           `afplay ./sfx-victory1.mp3`
           game_over = true
         elsif home_score == away_score
-          `say "it's all tied up!"`
+          `say "it's all tied up!" -v #{voice}`
         elsif home_score > 0 || away_score > 0
-          `say "#{winning_name} is winning"`
+          `say "#{winning_name} is winning" -v #{voice}`
         end
       end
 
