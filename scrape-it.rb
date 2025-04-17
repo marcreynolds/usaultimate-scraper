@@ -1,14 +1,14 @@
-require "httparty"
-require "nokogiri"
-require "thor"
+require 'httparty'
+require 'nokogiri'
+require 'thor'
 
 WINNING_SCORE = 15
 
 class Scraper < Thor
-  desc "match", "scrape a match report"
+  desc 'match', 'scrape a match report'
   option :url, type: :string
   option :match_id, type: :string
-  option :voice, type: :string, default: "alex"
+  option :voice, type: :string, default: 'Samantha'
   def match
     url = if options[:url].nil?
             "https:\/\/play.usaultimate.org\/teams\/events\/match_report\/?EventGameId=#{options[:match_id]}"
@@ -23,16 +23,16 @@ class Scraper < Thor
     away_score = nil
     away_name = nil
     game_over = false
-    while !game_over
+    until game_over
       response = Net::HTTP.get_response(uri)
 
       doc = Nokogiri::HTML(response.body)
 
       name_pattern = /(.*) \(/
-      new_home_score = doc.css("#home_score").text.strip.to_i
-      home_name = doc.css("#CT_Main_0_lblHomeTeam").text.strip.match(name_pattern)[1] if home_name.nil?
-      new_away_score = doc.css("#away_score").text.strip.to_i
-      away_name = doc.css("#CT_Main_0_lblAwayTeam").text.strip.match(name_pattern)[1] if away_name.nil?
+      new_home_score = doc.css('#home_score').text.strip.to_i
+      home_name = doc.css('#CT_Main_0_lblHomeTeam').text.strip.match(name_pattern)[1] if home_name.nil?
+      new_away_score = doc.css('#away_score').text.strip.to_i
+      away_name = doc.css('#CT_Main_0_lblAwayTeam').text.strip.match(name_pattern)[1] if away_name.nil?
 
       score_changed = new_home_score != home_score || new_away_score != away_score
 
@@ -56,7 +56,7 @@ class Scraper < Thor
         `say "#{away_name} has #{away_score} points" -v #{voice}`
         winning_name = home_score > away_score ? home_name : away_name
 
-        game_over = doc.css("#match_report > div:nth-child(2) > p:nth-child(2)").text.downcase.include?("final")
+        game_over = doc.css('#match_report > div:nth-child(2) > p:nth-child(2)').text.downcase.include?('final')
 
         if game_over || home_score >= WINNING_SCORE || away_score >= WINNING_SCORE
           `say "#{winning_name} just won!" -v #{voice}`
